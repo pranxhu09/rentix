@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}RentClone — Premium Rentals{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Rent premium gear, on demand.</h1>
+  <p>Bikes, cameras, gaming consoles, projectors, and party speakers — booked in minutes, delivered when you need them.</p>
+</section>
+
+<h2 class="section-title">Browse categories</h2>
+<div class="category-grid">
+  {% for cat in categories %}
+    <a href="{{ url_for('catalog.category_detail', slug=cat.slug) }}" class="category-card">
+      <div class="icon">📦</div>
+      <div>{{ cat.name }}</div>
+    </a>
+  {% endfor %}
+</div>
+
+<h2 class="section-title">Featured items</h2>
+{% if featured %}
+<div class="product-grid">
+  {% for p in featured %}
+    <a href="{{ url_for('catalog.product_detail', slug=p.slug) }}" class="product-card">
+      <img src="{{ p.image_url or 'https://placehold.co/400x300?text=' + p.name }}" alt="{{ p.name }}">
+      <div class="info">
+        <h3>{{ p.name }}</h3>
+        <div class="price">₹{{ '%.0f'|format(p.price_per_day) }} <small>/ day</small></div>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No products yet. Run <code>python seed.py</code> to add sample data.</div>
+{% endif %}
+{% endblock %}

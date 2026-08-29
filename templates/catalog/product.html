@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — RentClone{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+  <img src="{{ product.image_url or 'https://placehold.co/600x400?text=' + product.name }}" alt="{{ product.name }}">
+
+  <div>
+    <h1>{{ product.name }}</h1>
+    <div class="price-tag">₹{{ '%.0f'|format(product.price_per_day) }} <small style="font-size:1rem;color:var(--text-muted)">/ day</small></div>
+    <p>{{ product.description }}</p>
+
+    <form method="post" action="{{ url_for('booking.add_to_cart', product_id=product.id) }}">
+      <div class="date-row">
+        <div class="form-group">
+          <label>Start date</label>
+          <input type="date" name="start_date" required>
+        </div>
+        <div class="form-group">
+          <label>End date</label>
+          <input type="date" name="end_date" required>
+        </div>
+      </div>
+      <div class="form-group" style="max-width:120px;">
+        <label>Quantity</label>
+        <input type="number" name="quantity" value="1" min="1" max="{{ product.quantity_available }}">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Add to cart</button>
+    </form>
+
+    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:12px;">
+      {{ product.quantity_available }} unit(s) in inventory. Availability is confirmed for your exact dates at checkout.
+    </p>
+  </div>
+</div>
+
+{% if related %}
+<h2 class="section-title">You might also like</h2>
+<div class="product-grid">
+  {% for p in related %}
+    <a href="{{ url_for('catalog.product_detail', slug=p.slug) }}" class="product-card">
+      <img src="{{ p.image_url or 'https://placehold.co/400x300?text=' + p.name }}" alt="{{ p.name }}">
+      <div class="info">
+        <h3>{{ p.name }}</h3>
+        <div class="price">₹{{ '%.0f'|format(p.price_per_day) }} <small>/ day</small></div>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

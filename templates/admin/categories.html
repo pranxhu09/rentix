@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Manage categories — RentClone{% endblock %}
+
+{% block content %}
+<h1>Categories</h1>
+
+<div class="admin-tabs">
+  <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+  <a href="{{ url_for('admin.products') }}">Products</a>
+  <a href="{{ url_for('admin.categories') }}" class="active">Categories</a>
+  <a href="{{ url_for('admin.bookings') }}">Bookings</a>
+</div>
+
+<div style="display:grid; grid-template-columns: 1fr 320px; gap:32px;">
+  <table>
+    <thead><tr><th>Name</th><th>Slug</th><th>Products</th></tr></thead>
+    <tbody>
+      {% for c in categories %}
+      <tr>
+        <td>{{ c.name }}</td>
+        <td>{{ c.slug }}</td>
+        <td>{{ c.products|length }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="form-card" style="margin:0;">
+    <h2 style="font-size:1.1rem;">Add category</h2>
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.name.label }}
+        {{ form.name() }}
+      </div>
+      <div class="form-group">
+        {{ form.slug.label }}
+        {{ form.slug() }}
+      </div>
+      <div class="form-group">
+        {{ form.icon.label }}
+        {{ form.icon(placeholder="bike, camera, gamepad...") }}
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Add</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

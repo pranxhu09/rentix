@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Complete payment — RentClone{% endblock %}
+
+{% block content %}
+<div class="form-card" style="text-align:center;">
+  <h2>Booking #{{ booking.id }}</h2>
+  <p style="color:var(--text-muted);">
+    {{ booking.start_date }} → {{ booking.end_date }}
+  </p>
+  <div class="price-tag">₹{{ '%.0f'|format(booking.total_amount) }}</div>
+  <p style="color:var(--text-muted); font-size:0.85rem;">
+    Includes ₹{{ '%.0f'|format(booking.deposit_amount) }} refundable security deposit.
+  </p>
+
+  <button id="pay-btn" class="btn btn-primary btn-block">Pay now</button>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById('pay-btn').onclick = function (e) {
+  e.preventDefault();
+
+  var options = {
+    "key": "{{ razorpay_key_id }}",
+    "amount": "{{ amount_paise }}",
+    "currency": "{{ order.currency }}",
+    "order_id": "{{ order.id }}",
+    "name": "RentClone",
+    "description": "Booking #{{ booking.id }}",
+    "handler": function (response) {
+      // Send the payment result to our backend for signature verification
+      var form = document.createElement('form');
+      form.method = 'POST';
+      form.action = "{{ url_for('payment.verify') }}";
+
+      var fields = {
+        booking_id: "{{ booking.id }}",
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature
+      };
+      for (var key in fields) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = fields[key];
+        form.appendChild(input);
+      }
+      document.body.appendChild(form);
+      form.submit();
+    },
+    "prefill": {
+      "name": "{{ current_user.name }}",
+      "email": "{{ current_user.email }}",
+      "contact": "{{ current_user.phone or '' }}"
+    },
+    "theme": { "color": "#ffb200" }
+  };
+
+  var rzp = new Razorpay(options);
+  rzp.open();
+};
+</script>
+{% endblock %}

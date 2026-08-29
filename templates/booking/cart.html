@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Your cart — RentClone{% endblock %}
+
+{% block content %}
+<h1>Your cart</h1>
+
+{% if items %}
+  <p style="color:var(--text-muted);">
+    Rental period: <strong style="color:var(--text);">{{ start_date }}</strong> to
+    <strong style="color:var(--text);">{{ end_date }}</strong> ({{ days }} day{{ 's' if days != 1 }})
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Price/day</th><th>Qty</th><th>Total</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>₹{{ '%.0f'|format(item.product.price_per_day) }}</td>
+        <td>
+          <form method="post" action="{{ url_for('booking.update_cart_item', product_id=item.product.id) }}" style="display:flex; gap:6px;">
+            <input class="qty-input" type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.quantity_available }}">
+            <button type="submit" class="btn btn-secondary" style="padding:6px 10px;">Update</button>
+          </form>
+        </td>
+        <td>₹{{ '%.0f'|format(item.line_total) }}</td>
+        <td>
+          <form method="post" action="{{ url_for('booking.remove_cart_item', product_id=item.product.id) }}">
+            <button type="submit" class="btn btn-danger" style="padding:6px 10px;">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="summary-box">
+    <div class="summary-row"><span>Subtotal</span><span>₹{{ '%.0f'|format(subtotal) }}</span></div>
+    <div class="summary-row"><span>Security deposit</span><span>₹{{ '%.0f'|format(deposit) }}</span></div>
+    <div class="summary-row total"><span>Total payable</span><span>₹{{ '%.0f'|format(total) }}</span></div>
+    <form method="post" action="{{ url_for('booking.checkout') }}" style="margin-top:16px;">
+      <button type="submit" class="btn btn-primary btn-block">Proceed to checkout</button>
+    </form>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <p>Your cart is empty.</p>
+    <a href="{{ url_for('catalog.home') }}" class="btn btn-primary">Browse products</a>
+  </div>
+{% endif %}
+{% endblock %}

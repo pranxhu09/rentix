@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard — RentClone{% endblock %}
+
+{% block content %}
+<h1>Admin dashboard</h1>
+
+<div class="admin-tabs">
+  <a href="{{ url_for('admin.dashboard') }}" class="active">Dashboard</a>
+  <a href="{{ url_for('admin.products') }}">Products</a>
+  <a href="{{ url_for('admin.categories') }}">Categories</a>
+  <a href="{{ url_for('admin.bookings') }}">Bookings</a>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="num">{{ stats.products }}</div><div class="label">Products</div></div>
+  <div class="stat-card"><div class="num">{{ stats.categories }}</div><div class="label">Categories</div></div>
+  <div class="stat-card"><div class="num">{{ stats.bookings }}</div><div class="label">Total bookings</div></div>
+  <div class="stat-card"><div class="num">{{ stats.pending_bookings }}</div><div class="label">Pending payment</div></div>
+  <div class="stat-card"><div class="num">{{ stats.confirmed_bookings }}</div><div class="label">Confirmed</div></div>
+</div>
+
+<h2 class="section-title">Recent bookings</h2>
+{% if recent_bookings %}
+<table>
+  <thead><tr><th>#</th><th>Customer</th><th>Dates</th><th>Total</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for b in recent_bookings %}
+    <tr>
+      <td>#{{ b.id }}</td>
+      <td>{{ b.user.name }}</td>
+      <td>{{ b.start_date }} → {{ b.end_date }}</td>
+      <td>₹{{ '%.0f'|format(b.total_amount) }}</td>
+      <td><span class="badge badge-{{ b.status }}">{{ b.status }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">No bookings yet.</div>
+{% endif %}
+{% endblock %}

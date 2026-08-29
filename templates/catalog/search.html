@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Search — RentClone{% endblock %}
+
+{% block content %}
+<h1>Search results for "{{ query }}"</h1>
+
+{% if results %}
+<div class="product-grid">
+  {% for p in results %}
+    <a href="{{ url_for('catalog.product_detail', slug=p.slug) }}" class="product-card">
+      <img src="{{ p.image_url or 'https://placehold.co/400x300?text=' + p.name }}" alt="{{ p.name }}">
+      <div class="info">
+        <h3>{{ p.name }}</h3>
+        <div class="price">₹{{ '%.0f'|format(p.price_per_day) }} <small>/ day</small></div>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No results found{% if query %} for "{{ query }}"{% endif %}.</div>
+{% endif %}
+{% endblock %}

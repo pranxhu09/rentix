@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Payment setup needed — RentClone{% endblock %}
+
+{% block content %}
+<div class="form-card" style="text-align:center;">
+  <h2>Almost there</h2>
+  <p style="color:var(--text-muted);">
+    Booking #{{ booking.id }} was created (total ₹{{ '%.0f'|format(booking.total_amount) }}), but the site owner
+    hasn't added Razorpay API keys yet. Add <code>RAZORPAY_KEY_ID</code> and
+    <code>RAZORPAY_KEY_SECRET</code> to the <code>.env</code> file to enable live payments.
+  </p>
+  <a href="{{ url_for('booking.my_bookings') }}" class="btn btn-secondary">View my bookings</a>
+</div>
+{% endblock %}

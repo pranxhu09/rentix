@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — RentClone{% endblock %}
+
+{% block content %}
+<div class="form-card" style="max-width:560px;">
+  <h2>{{ title }}</h2>
+  <form method="post">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+      {{ form.name.label }}
+      {{ form.name() }}
+    </div>
+
+    <div class="form-group">
+      {{ form.slug.label }}
+      {{ form.slug() }}
+    </div>
+
+    <div class="form-group">
+      {{ form.category_id.label }}
+      {{ form.category_id() }}
+    </div>
+
+    <div class="form-group">
+      {{ form.description.label }}
+      {{ form.description(rows=4) }}
+    </div>
+
+    <div class="form-group">
+      {{ form.image_url.label }}
+      {{ form.image_url(placeholder="https://...") }}
+    </div>
+
+    <div class="date-row">
+      <div class="form-group">
+        {{ form.price_per_day.label }}
+        {{ form.price_per_day() }}
+      </div>
+      <div class="form-group">
+        {{ form.quantity_available.label }}
+        {{ form.quantity_available() }}
+      </div>
+    </div>
+
+    <div class="form-group form-check">
+      {{ form.is_active() }} {{ form.is_active.label }}
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Save product</button>
+  </form>
+</div>
+{% endblock %}
